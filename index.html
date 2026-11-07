@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>قرآني — مجسّم البوت</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --line:#262d36; --ink:#e6edf3; --dim:#8b949e;
+    --green:#2ea043; --green-soft:#13301d; --tg:#1f2c3a; --tg-me:#2b5278;
+    --gold:#d4a72c; --accent:#3fb950;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Tajawal','Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.7}
+  .wrap{max-width:1180px;margin:0 auto;padding:20px 14px 70px}
+  h1{font-size:21px;margin:0 0 4px;font-weight:700}
+  .sub{color:var(--dim);margin:0 0 18px;font-size:13px}
+
+  .stage{display:grid;grid-template-columns:360px 1fr;gap:24px;align-items:start}
+  @media(max-width:880px){.stage{grid-template-columns:1fr;gap:16px}}
+
+  .phone{background:#0b1016;border:1px solid var(--line);border-radius:26px;padding:10px;
+    box-shadow:0 18px 50px rgba(0,0,0,.55);max-width:400px;margin:0 auto}
+  .bar{display:flex;align-items:center;gap:9px;padding:8px 10px 12px;border-bottom:1px solid var(--line)}
+  .ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(145deg,#2ea043,#1a6b2c);
+    display:grid;place-items:center;font-size:17px}
+  .bar b{font-size:14px;font-weight:700}
+  .bar small{display:block;color:var(--dim);font-size:11px;font-weight:400}
+  .chat{height:455px;overflow-y:auto;padding:14px 10px;display:flex;flex-direction:column;gap:9px}
+  .chat::-webkit-scrollbar{width:5px}
+  .chat::-webkit-scrollbar-thumb{background:#2b333d;border-radius:3px}
+
+  .msg{max-width:88%;padding:9px 12px;border-radius:14px;font-size:13.5px;line-height:1.75;
+    white-space:pre-wrap;animation:pop .28s ease both}
+  .bot{background:var(--tg);border-top-right-radius:4px;align-self:flex-start}
+  .me{background:var(--tg-me);border-top-left-radius:4px;align-self:flex-end}
+  @keyframes pop{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+  .day{align-self:center;background:#1b2430;color:var(--dim);font-size:11px;padding:3px 11px;
+    border-radius:11px;margin:5px 0}
+
+  .kb{display:flex;flex-wrap:wrap;gap:6px;max-width:92%;align-self:flex-start;animation:pop .3s ease both}
+  .kb button{background:#223447;color:#9ecbff;border:1px solid #2d4a66;border-radius:9px;
+    padding:7px 11px;font-size:12.5px;font-family:inherit}
+  .kb button.hit{background:#2b5278;color:#fff;border-color:#3d6b96}
+  .chips{display:flex;flex-wrap:wrap;gap:5px;max-width:92%;align-self:flex-start}
+  .chips span{background:#1b2735;border:1px solid #2a3b4d;border-radius:8px;padding:4px 9px;
+    font-size:12px;color:var(--dim)}
+  .chips span.on{background:#3d2020;border-color:#6b3030;color:#ff9d9d}
+
+  .app{padding:16px 12px;height:455px;overflow-y:auto;background:#0f1419}
+  .app h3{margin:0 0 3px;font-size:17px}
+  .app .meta{color:var(--dim);font-size:12px;margin:0 0 15px}
+  .card{background:#161d26;border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:10px}
+  .card .t{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;margin-bottom:7px}
+  .card .t em{font-style:normal;color:var(--dim);font-weight:400;font-size:11.5px}
+  .card .body{font-size:13px;color:#c9d4df}
+  .appbtns{display:flex;gap:7px;margin-top:14px}
+  .appbtns b{flex:1;text-align:center;padding:10px;border-radius:11px;font-size:12.5px;font-weight:500}
+  .appbtns b:nth-child(1){background:var(--green);color:#fff}
+  .appbtns b:nth-child(2){background:#2a2118;color:var(--gold);border:1px solid #4a3a1e}
+  .appbtns b:nth-child(3){background:#1b2430;color:var(--dim)}
+
+  .side{display:flex;flex-direction:column;gap:14px}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+  .box h2{margin:0 0 3px;font-size:15px}
+  .box .hint{color:var(--dim);font-size:12.5px;margin:0 0 14px}
+  .note{color:#c9d4df;font-size:14px;margin:0 0 14px}
+  .note b{color:var(--accent)}
+
+  table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+  th{text-align:right;color:var(--dim);font-weight:500;padding:5px 5px;border-bottom:1px solid var(--line);font-size:11px}
+  td{padding:6px 5px;border-bottom:1px solid #1d232b}
+  tr:last-child td{border-bottom:0}
+  .st{display:inline-block;padding:1.5px 7px;border-radius:7px;font-size:11px;white-space:nowrap}
+  .s-new{background:#2a2118;color:var(--gold)}
+  .s-old{background:#16242e;color:#79c0ff}
+  .s-rev{background:#331c1c;color:#ff9d9d}
+  .s-mas{background:var(--green-soft);color:var(--accent)}
+  .chg{color:var(--accent);font-weight:700}
+
+  .nav{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+  .nav button{background:#21262d;color:var(--ink);border:1px solid #30363d;border-radius:10px;
+    padding:12px 20px;font-size:14px;font-family:inherit;cursor:pointer}
+  .nav button:disabled{opacity:.35}
+  .nav .go{background:var(--green);border-color:var(--green);color:#fff;font-weight:700}
+  .dots{display:flex;gap:5px;margin-right:auto}
+  .dots i{width:7px;height:7px;border-radius:50%;background:#30363d;transition:.2s}
+  .dots i.on{background:var(--accent);transform:scale(1.25)}
+  .scene{color:var(--dim);font-size:12px;margin:0 0 9px}
+  .scene b{color:var(--ink);font-size:14px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>قرآني — مجسّم البوت 🌿</h1>
+  <p class="sub">دوس «التالي» وإنت ماشي مع المستخدم من أول <code>/start</code> لحد أول صفحة «تنشف». الأرقام تمثيلية لحافظ 7 أجزاء بيحفظ صفحة في اليوم.</p>
+
+  <div class="stage">
+    <div>
+      <div class="phone">
+        <div class="bar">
+          <div class="ava">🌿</div>
+          <div><b>قرآني</b><small id="status">bot</small></div>
+        </div>
+        <div class="chat" id="chat"></div>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="box">
+        <p class="scene"><b id="sceneTitle"></b></p>
+        <p class="note" id="note"></p>
+        <div class="nav">
+          <button class="go" id="next">التالي ←</button>
+          <button id="prev">→ السابق</button>
+          <div class="dots" id="dots"></div>
+        </div>
+      </div>
+
+      <div class="box">
+        <h2>الدفتر ورا الكواليس</h2>
+        <p class="hint">ده اللي البوت بيكتب فيه. سطر لكل صفحة من الـ604 — واللي بيتغير بيلمع.</p>
+        <table>
+          <thead><tr><th>صفحة</th><th>الحالة</th><th>اتحفظت</th><th>مراجعات</th><th>نضيفة ورا بعض</th></tr></thead>
+          <tbody id="ledger"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var ST = {
+  new_fix:    ['في التثبيت','s-new'],
+  old_review: ['قديم','s-old'],
+  reviewing:  ['ضعيفة','s-rev'],
+  mastered:   ['متقن','s-mas']
+};
+
+function wird(d){
+  return '☀️ *ورد ' + d.day + '*\n'
+    + '━━━━━━━━━━━━━\n'
+    + '🌱 *حفظ جديد*\n   صفحة ' + d.nw + ' — ' + d.newSurah + '\n\n'
+    + '🔁 *تثبيت الجديد* · ' + d.fix.length + ' صفحات\n   ' + d.fix.join(' · ') + '\n'
+    + (d.fixNote ? '   ⚠️ ' + d.fixNote + '\n' : '')
+    + '\n📖 *مراجعة القديم* · ' + d.oldN + ' صفحة\n   من ' + d.oldFrom + ' إلى ' + d.oldTo + '\n'
+    + '━━━━━━━━━━━━━\n'
+    + 'الإجمالي: ' + d.total + ' صفحة';
+}
+
+var SCENES = [
+  {
+    title: 'أول مرة — /start',
+    note: 'البوت بيعرّف نفسه بالتلات أقسام، وبيسأل أول سؤال: <b>إنت حافظ إيه؟</b> ده أهم سؤال، لأن كل حساب بعد كده مبني عليه.',
+    chat: [
+      {me:'/start'},
+      {bot:'أهلًا بك في «قرآني» 🌿\n\nكل يوم الصبح هبعتلك وردك في تلات أقسام:\n\n🌱 *حفظ جديد*\n🔁 *تثبيت الجديد*\n📖 *مراجعة القديم*\n\nعلى طريقة الشيخ علاء حامد.\n\nعلشان أحسبهم، محتاج أعرف إنت حافظ إيه.'},
+      {kb:['📗 اربط حسابي في وتواصوا','✍️ أنا جديد، هملا جدولي']}
+    ],
+    ledger: null
+  },
+  {
+    title: 'التسجيل — من خريطة وتواصوا',
+    note: 'الناس <b>مش هتسجّل حفظها في البوت</b>. الخريطة الملوّنة موجودة وجاهزة في وتواصوا، فالبوت بيقرا منها. ولو لسه ما ملاهاش، بيوديه عليها بلينك.',
+    chat: [
+      {me:'📗 اربط حسابي في وتواصوا'},
+      {bot:'اضغط الرابط ده وسجّل دخولك مرة واحدة:\n🔗 watawasaw.app/link/qurani\n\nمش هشوف غير جدول حفظك.'},
+      {bot:'تم ✅\n\nقريت جدول حفظك:\n\n📗 *140 صفحة — 7 أجزاء*\n• الفاتحة ← الأنعام: قديم\n• آخر 20 صفحة: محتاجة تثبيت\n\nده صح؟'},
+      {kb:['✅ صح','🎨 أعدّله على الخريطة']}
+    ],
+    ledger: null
+  },
+  {
+    title: 'سؤالين وخلاص',
+    note: 'إعدادين بس. الباقي كله مظبوط من الأول: الدورة <b>7 أيام</b> والأوضة <b>20 صفحة</b> — وينفع يتغيروا بعدين.',
+    chat: [
+      {me:'✅ صح'},
+      {bot:'1️⃣ هتحفظ قد إيه في اليوم؟'},
+      {kb:['نص صفحة','صفحة','صفحتين'], hit:1},
+      {me:'صفحة'},
+      {bot:'2️⃣ أبعتلك الورد الساعة كام؟'},
+      {me:'5:00 — بعد الفجر'},
+      {bot:'تمام 🌿\n\n• الحفظ: صفحة في اليوم\n• مراجعة القديم: دورة كل 7 أيام\n• التثبيت: آخر 20 صفحة\n\nأشوفك بكرة الصبح.'}
+    ],
+    ledger: null
+  },
+  {
+    title: 'ورد الصبح — اليوم الأول',
+    note: 'التلات أقسام بالصفحات بالظبط. <b>القديم = 120 صفحة ÷ 7 = 17 صفحة.</b> والتثبيت = صفحة امبارح + 4 بالدور من الأوضة.',
+    day: 'النهارده · 5:00 ص',
+    chat: [
+      {bot: wird({day:'اليوم', nw:141, newSurah:'الأعراف', fix:['140','121','122','123','124'],
+                  oldN:17, oldFrom:'الفاتحة 1', oldTo:'البقرة 17', total:23})},
+      {kb:['✅ خلصت','✍️ عندي أخطاء','🤲 عندي عذر']}
+    ],
+    ledger: [
+      {p:121,s:'new_fix',m:'20 أكتوبر',r:4,c:4},
+      {p:122,s:'new_fix',m:'21 أكتوبر',r:4,c:2},
+      {p:140,s:'new_fix',m:'امبارح',r:0,c:0},
+      {p:141,s:'new_fix',m:'النهارده',r:0,c:0,hl:true},
+      {p:5,  s:'old_review',m:'فبراير',r:'—',c:9}
+    ]
+  },
+  {
+    title: 'لما تغلط — كشكول الأخطاء',
+    note: 'ده قلب النظام. <b>غلطتين أو أكتر = الصفحة ترجع للعلاج</b> وتيجي أول الورد بكرة. غلطة واحدة = بس بعدّ عليها. أوتوماتيك، إنت بتدوس وبس.',
+    chat: [
+      {me:'✍️ عندي أخطاء'},
+      {bot:'في أنهي صفحات؟ دوس عليها:'},
+      {chips:['121','122','123','124','140','1','2','3','4','5'], on:['122','5']},
+      {me:'122 · 5'},
+      {bot:'سجلتها ✍️\n\n🔴 *صفحة 122* — غلطتين. رجعت للعلاج، وهتيجي أول حاجة بكرة.\n\n🟡 *صفحة 5* — غلطة واحدة. لسه قديمة، بس بعدّ عليها.'}
+    ],
+    ledger: [
+      {p:121,s:'new_fix',m:'20 أكتوبر',r:5,c:5,chg:'r c'},
+      {p:122,s:'reviewing',m:'21 أكتوبر',r:5,c:0,hl:true,chg:'r c'},
+      {p:140,s:'new_fix',m:'امبارح',r:1,c:1,chg:'r c'},
+      {p:141,s:'new_fix',m:'النهارده',r:0,c:0},
+      {p:5,  s:'old_review',m:'فبراير',r:'—',c:0,chg:'c'}
+    ]
+  },
+  {
+    title: 'ورد الصبح — اليوم التاني',
+    note: 'شوف تلات حاجات اتغيروا لوحدهم: <b>القديم كمّل من 18</b> مش من الأول · <b>122 الضعيفة جات في المقدمة</b> · <b>141 بقت «صفحة امبارح»</b> فتتقرا كاملة.',
+    day: 'بكرة · 5:00 ص',
+    chat: [
+      {bot: wird({day:'اليوم', nw:142, newSurah:'الأعراف', fix:['122 🔴','141','125','126','127'],
+                  fixNote:'122 أول واحدة — لسه ضعيفة',
+                  oldN:17, oldFrom:'البقرة 18', oldTo:'البقرة 34', total:23})},
+      {kb:['✅ خلصت','✍️ عندي أخطاء','🤲 عندي عذر']}
+    ],
+    ledger: [
+      {p:122,s:'reviewing',m:'21 أكتوبر',r:6,c:1,hl:true,chg:'r c'},
+      {p:140,s:'new_fix',m:'أول امبارح',r:2,c:2,chg:'r c'},
+      {p:141,s:'new_fix',m:'امبارح',r:1,c:1,chg:'r c'},
+      {p:142,s:'new_fix',m:'النهارده',r:0,c:0,hl:true,chg:'s'},
+      {p:18, s:'old_review',m:'فبراير',r:'—',c:4,chg:'c'}
+    ]
+  },
+  {
+    title: 'بعد 3 أسابيع — الصفحة «نشفت»',
+    note: 'ده الرقم اللي اتفقنا عليه شغّال: <b>5 مراجعات + آخر مراجعتين نضيفتين = خرجت من الأوضة.</b> سريرها بقى فاضي لصفحة جديدة، فالأوضة بتفضل 20 على طول.',
+    day: 'بعد 20 يوم',
+    chat: [
+      {bot:'🎉 *صفحة 141 نشفت*\n\nاتراجعت 5 مرات، وآخر مراجعتين نضيفتين.\nنزلت من التثبيت للدورة الأسبوعية.\n\nالأوضة فضيت سرير — صفحة 161 دخلت مكانها.'},
+      {bot:'📊 *بعد 20 يوم*\n\n• الحفظ: 160 صفحة (8 أجزاء)\n• في التثبيت: 20 صفحة\n• في الدورة: 140 صفحة ÷ 7 = 20 صفحة/يوم\n• ضعيفة: صفحة واحدة\n\nالورد بقى 26 صفحة. لو تقيل عليك، أطوّل الدورة لـ10 أيام وينزل لـ19.'},
+      {kb:['📈 طوّل الدورة','👍 كمّل كده']}
+    ],
+    ledger: [
+      {p:141,s:'old_review',m:'20 يوم',r:5,c:2,hl:true,chg:'s'},
+      {p:122,s:'old_review',m:'شهر',r:9,c:3,chg:'s c'},
+      {p:161,s:'new_fix',m:'النهارده',r:0,c:0,hl:true,chg:'s'},
+      {p:5,  s:'old_review',m:'فبراير',r:'—',c:3,chg:'c'},
+      {p:1,  s:'mastered',m:'يناير',r:'—',c:21,chg:'s'}
+    ]
+  },
+  {
+    title: 'ونفس الحاجة جوّه الأبلكيشن',
+    note: 'نفس الورد، نفس الزراير، <b>ونفس الدفتر</b>. مش نسختين — مخ واحد في Supabase، والبوت والشاشة الاتنين وشّ ليه.',
+    app: true,
+    ledger: [
+      {p:141,s:'old_review',m:'20 يوم',r:5,c:2},
+      {p:122,s:'old_review',m:'شهر',r:9,c:3},
+      {p:161,s:'new_fix',m:'النهارده',r:0,c:0},
+      {p:5,  s:'old_review',m:'فبراير',r:'—',c:3},
+      {p:1,  s:'mastered',m:'يناير',r:'—',c:21}
+    ]
+  }
+];
+
+var chat = document.getElementById('chat');
+var phone = chat.parentElement;
+var i = 0, lastLedger = null;
+
+function bold(s){ return s.replace(/\*(.+?)\*/g, '<b>$1</b>'); }
+
+function appScreen(){
+  return '<div class="app">'
+    + '<h3>ورد النهارده</h3>'
+    + '<p class="meta">الجمعة · 8 أجزاء محفوظة · الدورة 7 أيام</p>'
+    + '<div class="card"><div class="t"><span>🌱 حفظ جديد</span><em>صفحة</em></div>'
+    + '<div class="body">صفحة 161 — الأعراف</div></div>'
+    + '<div class="card"><div class="t"><span>🔁 تثبيت الجديد</span><em>5 صفحات</em></div>'
+    + '<div class="body">160 · 141 · 145 · 146 · 147</div></div>'
+    + '<div class="card"><div class="t"><span>📖 مراجعة القديم</span><em>20 صفحة</em></div>'
+    + '<div class="body">البقرة 18 ← البقرة 37</div></div>'
+    + '<div class="appbtns"><b>✅ خلصت</b><b>✍️ عندي أخطاء</b><b>🤲 عذر</b></div>'
+    + '</div>';
+}
+
+function render(){
+  var s = SCENES[i];
+  document.getElementById('sceneTitle').textContent = s.title;
+  document.getElementById('note').innerHTML = s.note;
+  document.getElementById('status').textContent = s.app ? 'شاشة الأبلكيشن' : 'bot';
+
+  if (s.app){
+    chat.style.display = 'none';
+    var a = phone.querySelector('.app');
+    if (!a) phone.insertAdjacentHTML('beforeend', appScreen());
+    else a.style.display = '';
+  } else {
+    var ap = phone.querySelector('.app');
+    if (ap) ap.style.display = 'none';
+    chat.style.display = '';
+    chat.innerHTML = '';
+    if (s.day) chat.insertAdjacentHTML('beforeend', '<div class="day">' + s.day + '</div>');
+    s.chat.forEach(function(m){
+      if (m.bot) chat.insertAdjacentHTML('beforeend', '<div class="msg bot">' + bold(m.bot) + '</div>');
+      else if (m.me) chat.insertAdjacentHTML('beforeend', '<div class="msg me">' + m.me + '</div>');
+      else if (m.kb) chat.insertAdjacentHTML('beforeend', '<div class="kb">' + m.kb.map(function(b,k){
+        return '<button class="' + (m.hit===k?'hit':'') + '">' + b + '</button>'; }).join('') + '</div>');
+      else if (m.chips) chat.insertAdjacentHTML('beforeend', '<div class="chips">' + m.chips.map(function(c){
+        return '<span class="' + (m.on.indexOf(c)>-1?'on':'') + '">' + c + '</span>'; }).join('') + '</div>');
+    });
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  var rows = s.ledger || lastLedger;
+  if (s.ledger) lastLedger = s.ledger;
+  var tb = document.getElementById('ledger');
+  if (!rows){
+    tb.innerHTML = '<tr><td colspan="5" style="color:var(--dim);text-align:center;padding:18px">لسه فاضي — الدفتر يبدأ أول ورد</td></tr>';
+  } else {
+    tb.innerHTML = rows.map(function(r){
+      var pair = ST[r.s], lab = pair[0], cls = pair[1];
+      var ch = r.chg || '';
+      return '<tr style="' + (r.hl?'background:#151c17':'') + '">'
+        + '<td><b>' + r.p + '</b></td>'
+        + '<td><span class="st ' + cls + '">' + lab + '</span></td>'
+        + '<td style="color:var(--dim)">' + r.m + '</td>'
+        + '<td class="' + (ch.indexOf('r')>-1?'chg':'') + '">' + r.r + '</td>'
+        + '<td class="' + (ch.indexOf('c')>-1?'chg':'') + '">' + r.c + '</td></tr>';
+    }).join('');
+  }
+
+  document.getElementById('dots').innerHTML = SCENES.map(function(_,k){
+    return '<i class="' + (k===i?'on':'') + '"></i>'; }).join('');
+  document.getElementById('prev').disabled = i === 0;
+  document.getElementById('next').disabled = i === SCENES.length - 1;
+  document.getElementById('next').textContent = i === SCENES.length - 1 ? 'خلصنا' : 'التالي ←';
+}
+
+document.getElementById('next').onclick = function(){ if (i < SCENES.length-1){ i++; render(); } };
+document.getElementById('prev').onclick = function(){ if (i > 0){ i--; render(); } };
+document.addEventListener('keydown', function(e){
+  if (e.key === 'ArrowLeft') document.getElementById('next').click();
+  if (e.key === 'ArrowRight') document.getElementById('prev').click();
+});
+render();
+</script>
+</body>
+</html>
